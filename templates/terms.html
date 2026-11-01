@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}Terms of Use - {{ name }}{% endblock %}
+{% block content %}
+<h3>📄 Terms of Use</h3>
+<p class="text-muted">{{ name }} · Last updated: 1 November 2026</p>
+<div class="card card-body mb-4">
+  <h5>1. Acceptance</h5><p>By using {{ name }} you agree to these terms. If you do not agree, please do not use the app.</p>
+  <h5>2. Purpose</h5><p>The app helps you record and report attendance. Percentages are calculated from the marks you enter.</p>
+  <h5>3. Your responsibility</h5><p>Results are only as accurate as the attendance you record. Please check marks before saving, and keep your own backups by exporting reports regularly.</p>
+  <h5>4. People's data</h5><p>You are responsible for handling the names and information of the people you record in line with your organisation's rules and the law, as described in the <a href="{{ url_for('privacy') }}">Privacy Policy</a>.</p>
+  <h5>5. No warranty</h5><p>The app is provided "as is", without any promise that it will be error-free or always available. To the extent allowed by law, the developer is not responsible for losses that result from using it.</p>
+  <h5>6. Ownership</h5><p>{{ name }} was developed by Gift Meza (Mezaneyo). The source code may be used for learning.</p>
+  <h5>7. Changes</h5><p class="mb-0">These terms may be updated. Continuing to use the app means you accept the updated terms.</p>
+</div>
+{% endblock %}

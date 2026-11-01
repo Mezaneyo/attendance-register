@@ -1,0 +1,16 @@
+{% extends "base.html" %}
+{% block content %}
+<h4>Edit member</h4>
+<form method="post" class="card card-body mb-3" style="max-width:520px">
+  <label class="form-label mb-0">Name</label><input class="form-control mb-2" name="name" value="{{ m.name }}" maxlength="80" required>
+  <label class="form-label mb-0">ID / registration number (optional)</label><input class="form-control mb-3" name="code" value="{{ m.code or '' }}" maxlength="30">
+  <button class="btn btn-success">Save changes</button>
+  <a class="btn btn-link" href="{{ url_for('class_page', cid=m.class_id) }}">Cancel</a>
+</form>
+<h5>Attendance history</h5>
+<table class="table bg-white small">
+  {% for h in history %}<tr><td>{{ h.day }}{% if h.title %} · {{ h.title }}{% endif %}</td>
+    <td><span class="badge text-bg-{{ colors[h.status] }}">{{ h.status }}</span></td></tr>
+  {% else %}<tr><td class="text-muted">No attendance recorded yet.</td></tr>{% endfor %}
+</table>
+{% endblock %}

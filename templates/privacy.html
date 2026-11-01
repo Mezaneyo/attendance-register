@@ -1,0 +1,17 @@
+{% extends "base.html" %}
+{% block title %}Privacy Policy - {{ name }}{% endblock %}
+{% block content %}
+<h3>🔒 Privacy Policy</h3>
+<p class="text-muted">{{ name }} · Last updated: 1 November 2026</p>
+<div class="card card-body mb-4">
+  <h5>In short</h5><p>The names and attendance you enter stay on your own device. The app has no accounts, no advertising and no tracking.</p>
+  <h5>What the app stores</h5><p>Class names, member names and optional ID numbers, session dates and titles, attendance marks and your settings, in a database file on your phone or computer.</p>
+  <h5>What we do not do</h5>
+  <ul><li>We do not send your data to any server</li><li>We do not sell or share your data, and we do not use analytics or advertising</li><li>We do not access your contacts, location or camera</li></ul>
+  <h5>Other people's information</h5><p>Attendance lists contain the names of other people. Please record only what you need, keep the device protected, and follow the rules of your school or organisation (and ask for permission where required).</p>
+  <h5>Internet and third-party content</h5><p>The page design (Bootstrap) is loaded from a public content delivery network when you are online, so that network can see your internet address like any website. Your attendance data is never sent with that request.</p>
+  <h5>Exports</h5><p>Exported reports are created on your device. You decide where to save and who receives them.</p>
+  <h5>Deleting data</h5><p>Delete a member, session or class with the ✕ buttons, or use <a href="{{ url_for('settings') }}">Settings → Clear all data</a>. Uninstalling the app also removes everything.</p>
+  <h5>Contact</h5><p class="mb-0">Questions? WhatsApp +265 995 514 049.</p>
+</div>
+{% endblock %}

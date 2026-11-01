@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% block title %}About - {{ name }}{% endblock %}
+{% block content %}
+<div class="text-center mb-3"><img src="{{ url_for('static', filename='icon.png') }}" alt="{{ name }} logo" width="96" height="96" class="rounded-4 shadow-sm"></div>
+<h3 class="text-center">About {{ name }}</h3>
+<p class="text-muted text-center">Version {{ version }}</p>
+<div class="card card-body mb-3"><h5>What it does</h5>
+  <ul class="mb-0"><li>Create classes or groups and add their members (one per line)</li><li>Take attendance for each session: Present, Late, Absent or Excused</li>
+    <li>See each member's attendance %, with members below the minimum shown in red</li><li>Edit or delete members and sessions</li><li>Export the report to Excel, PDF, Word or CSV</li></ul></div>
+<div class="card card-body mb-3"><h5>How attendance % works</h5>
+  <p class="mb-0">Attendance % = (Present + Late) ÷ (Present + Late + Absent) × 100. Excused sessions are left out of the calculation. Sessions where a member was not marked are also left out.</p></div>
+<div class="card card-body mb-4"><h5>Developer</h5>
+  <p class="mb-2">Developed by <b>Gift Meza</b> (Mezaneyo). Built with Python, Flask, SQLite and Bootstrap.</p>
+  <a class="btn btn-outline-success" href="https://wa.me/{{ whatsapp }}" target="_blank" rel="noopener">💬 Contact on WhatsApp: +265 995 514 049</a></div>
+{% endblock %}

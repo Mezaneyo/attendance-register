@@ -1,0 +1,65 @@
+{% extends "base.html" %}
+{% block title %}{{ cls.name }} · {{ name }}{% endblock %}
+{% block content %}
+<div class="d-flex justify-content-between align-items-start mb-2">
+  <div><h3 class="mb-0">{{ cls.name }}</h3><a class="small" href="{{ url_for('index') }}">‹ All classes</a></div>
+  <div class="dropdown"><button class="btn btn-outline-success btn-sm dropdown-toggle" data-bs-toggle="dropdown">⬇ Export</button>
+    <ul class="dropdown-menu dropdown-menu-end">
+      <li><a class="dropdown-item" href="{{ url_for('share', fmt='xlsx', cid=cls.id) }}">📗 Excel (.xlsx)</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('share', fmt='pdf', cid=cls.id) }}">📕 PDF (.pdf)</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('share', fmt='docx', cid=cls.id) }}">📘 Word (.docx)</a></li>
+      <li><a class="dropdown-item" href="{{ url_for('share', fmt='csv', cid=cls.id) }}">📄 CSV</a></li>
+    </ul></div>
+</div>
+<div class="row g-2 text-center mb-3">
+  <div class="col-3"><div class="card card-body py-2 px-1"><b>{{ s.members }}</b><small>Members</small></div></div>
+  <div class="col-3"><div class="card card-body py-2 px-1"><b>{{ s.sessions }}</b><small>Sessions</small></div></div>
+  <div class="col-3"><div class="card card-body py-2 px-1"><b>{{ s.average|pct }}</b><small>Average</small></div></div>
+  <div class="col-3"><div class="card card-body py-2 px-1"><b class="{{ 'text-danger' if s.low }}">{{ s.low }}</b><small>Below {{ '%g'|format(s.min_pct) }}%</small></div></div>
+</div>
+
+<div class="card mb-3"><div class="card-header fw-bold">1️⃣ Add members</div><div class="card-body">
+  <form method="post" action="{{ url_for('add_members', cid=cls.id) }}">
+    <textarea class="form-control mb-2" name="names" rows="4" placeholder="One name per line. Optional ID after a comma:&#10;Mary Banda, 2024/001&#10;John Phiri" required></textarea>
+    <button class="btn btn-success w-100">Add members</button>
+  </form>
+</div></div>
+
+<div class="card mb-3"><div class="card-header fw-bold">2️⃣ Take attendance</div><div class="card-body">
+  {% if s.members %}
+  <form method="post" action="{{ url_for('add_session', cid=cls.id) }}">
+    <div class="row g-2">
+      <div class="col-5"><label class="form-label mb-0">Date</label><input class="form-control" type="date" name="day" value="{{ today }}" required></div>
+      <div class="col-7"><label class="form-label mb-0">Title (optional)</label><input class="form-control" name="title" placeholder="e.g. Maths lesson" maxlength="60"></div>
+    </div>
+    <button class="btn btn-success w-100 mt-2">Start taking attendance</button>
+  </form>
+  {% else %}<p class="text-muted mb-0">Add members first (step 1).</p>{% endif %}
+</div></div>
+
+<div class="card mb-3"><div class="card-header fw-bold">3️⃣ Members and attendance %</div>
+<div class="table-responsive"><table class="table align-middle mb-0 small">
+  <thead><tr><th>Member</th><th>Attendance</th><th></th></tr></thead>
+  {% for r in rows %}<tr>
+    <td><b>{{ r.name }}</b>{% if r.code %}<br><span class="text-muted">{{ r.code }}</span>{% endif %}</td>
+    <td>{% if r.none %}<span class="badge text-bg-secondary">No data</span>{% else %}<span class="badge text-bg-{{ 'danger' if r.low else 'success' }}">{{ r.pct|pct }}</span>{% endif %}
+      <br><span class="text-muted">P {{ r.present }} · L {{ r.late }} · A {{ r.absent }} · E {{ r.excused }}</span></td>
+    <td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('edit_member', mid=r.id) }}">Edit</a>
+      <form class="d-inline" method="post" action="{{ url_for('delete_member', mid=r.id) }}"><button class="btn btn-sm btn-outline-danger js-del">✕</button></form></td>
+  </tr>{% else %}<tr><td colspan="3" class="text-muted text-center py-3">No members yet.</td></tr>{% endfor %}
+</table></div>
+<div class="card-footer small text-muted">P = Present, L = Late, A = Absent, E = Excused. Attendance % = (P + L) ÷ (P + L + A). Excused is not counted. Red = below {{ '%g'|format(s.min_pct) }}%.</div></div>
+
+<div class="card mb-3"><div class="card-header fw-bold">4️⃣ Sessions</div>
+<div class="table-responsive"><table class="table align-middle mb-0 small">
+  <thead><tr><th>Date</th><th>Result</th><th></th></tr></thead>
+  {% for x in sessions %}<tr>
+    <td><b>{{ x.day }}</b>{% if x.title %}<br><span class="text-muted">{{ x.title }}</span>{% endif %}</td>
+    <td>P {{ x.p }} · L {{ x.l }} · A {{ x.a }} · E {{ x.e }}</td>
+    <td class="text-nowrap"><a class="btn btn-sm btn-outline-primary" href="{{ url_for('take', sid=x.id) }}">Open</a>
+      <form class="d-inline" method="post" action="{{ url_for('delete_session', sid=x.id) }}"><button class="btn btn-sm btn-outline-danger js-del">✕</button></form></td>
+  </tr>{% else %}<tr><td colspan="3" class="text-muted text-center py-3">No sessions yet.</td></tr>{% endfor %}
+</table></div></div>
+
+<form class="mb-4" method="post" action="{{ url_for('delete_class', cid=cls.id) }}"><button class="btn btn-outline-danger btn-sm js-del">Delete this class</button></form>
+{% endblock %}

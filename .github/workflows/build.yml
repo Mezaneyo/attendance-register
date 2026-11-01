@@ -1,0 +1,30 @@
+# Builds AttendanceRegister.exe (Windows) and the APK (Android) in the cloud, free, on every push.
+# Download the results from the "Actions" tab -> latest run -> Artifacts.
+name: Build exe and apk
+on: [push, workflow_dispatch]
+jobs:
+  exe:
+    runs-on: windows-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.11" }
+      - run: python -m pip install flask pyinstaller
+      - run: python -m PyInstaller --noconfirm --onefile --name AttendanceRegister --icon icon.ico --add-data "templates;templates" --add-data "static;static" desktop.py
+      - uses: actions/upload-artifact@v4
+        with: { name: AttendanceRegister-exe, path: dist/AttendanceRegister.exe }
+  apk:
+    runs-on: ubuntu-22.04
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-python@v5
+        with: { python-version: "3.10" }
+      - run: |
+          sudo apt-get update
+          sudo apt-get install -y git zip unzip openjdk-17-jdk autoconf libtool pkg-config zlib1g-dev libncurses5-dev libncursesw5-dev libtinfo5 cmake libffi-dev libssl-dev
+          pip install --upgrade "buildozer==1.5.0" "cython<3"
+      - uses: actions/setup-java@v4
+        with: { distribution: temurin, java-version: "17" }
+      - run: buildozer -v android debug
+      - uses: actions/upload-artifact@v4
+        with: { name: AttendanceRegister-apk, path: bin/*.apk }

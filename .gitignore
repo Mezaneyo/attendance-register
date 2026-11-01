@@ -1,0 +1,8 @@
+__pycache__/
+*.db
+*.log
+build/
+dist/
+.buildozer/
+bin/
+*.spec.bak
