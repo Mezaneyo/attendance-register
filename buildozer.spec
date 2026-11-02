@@ -2,7 +2,7 @@
 title = Attendance Register
 icon.filename = %(source.dir)s/icon.png
 package.name = attendanceregister
-package.domain = org.mezaneyo
+package.domain = org.attendance
 source.dir = .
 source.include_exts = py,html,css,png
 source.exclude_dirs = .github,bin,dist,build,__pycache__,.buildozer

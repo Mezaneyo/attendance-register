@@ -1,28 +1,27 @@
 {% extends "base.html" %}
 {% block content %}
-<a class="small" href="{{ url_for('class_page', cid=s.class_id) }}">‹ {{ s.cname }}</a>
-<h4 class="mb-0">Attendance: {{ s.day }}</h4>
-{% if s.title %}<div class="text-muted">{{ s.title }}</div>{% endif %}
-<div class="my-2 small"><span class="badge text-bg-success">P</span> Present <span class="badge text-bg-warning">L</span> Late <span class="badge text-bg-danger">A</span> Absent <span class="badge text-bg-secondary">E</span> Excused</div>
-<div class="d-flex gap-2 mb-2">
-  <button type="button" class="btn btn-sm btn-outline-success" onclick="setAll('Present')">Everyone present</button>
-  <button type="button" class="btn btn-sm btn-outline-danger" onclick="setAll('Absent')">Everyone absent</button>
+<a href="{{ url_for('class_page', cid=s.class_id) }}#sessions">‹ {{ s.cname }}</a>
+<h1>{{ s.title or 'Attendance' }}</h1>
+<p class="muted" style="margin-top:-6px">{{ s.day }}</p>
+<div class="box">
+  <div class="row2">
+    <button type="button" class="btn out" onclick="setAll('Present')">Everyone present</button>
+    <button type="button" class="btn red" onclick="setAll('Absent')">Everyone absent</button>
+  </div>
+  <p class="s" style="margin:10px 0 0"><span class="tag t-P">P</span> Present &nbsp;<span class="tag t-L">L</span> Late &nbsp;<span class="tag t-A">A</span> Absent &nbsp;<span class="tag t-E">E</span> Excused</p>
 </div>
 <form method="post">
-  <div class="card mb-3">
+  <div class="list">
   {% for m in members %}
-    <div class="d-flex justify-content-between align-items-center border-bottom p-2">
-      <div class="me-2"><b>{{ m.name }}</b>{% if m.code %}<br><small class="text-muted">{{ m.code }}</small>{% endif %}</div>
-      <div class="btn-group btn-group-sm" role="group">
-        {% for st in statuses %}
-        <input type="radio" class="btn-check" name="status_{{ m.id }}" id="s{{ m.id }}_{{ loop.index }}" value="{{ st }}" {{ 'checked' if current.get(m.id, 'Present') == st }}>
-        <label class="btn btn-outline-{{ colors[st] }}" style="min-width:40px" for="s{{ m.id }}_{{ loop.index }}">{{ st[0] }}</label>
-        {% endfor %}
+    <div class="item" style="flex-wrap:wrap">
+      <div class="t"><b>{{ m.name }}</b>{% if m.code %}<span class="s">{{ m.code }}</span>{% endif %}</div>
+      <div style="flex:none">
+        {% for st in statuses %}<input type="radio" class="rd" name="status_{{ m.id }}" id="s{{ m.id }}_{{ loop.index }}" value="{{ st }}" {{ 'checked' if current.get(m.id, 'Present') == st }}><label class="mk {{ st[0] }}" for="s{{ m.id }}_{{ loop.index }}" style="margin-top:0;margin-bottom:0">{{ st[0] }}</label>{% endfor %}
       </div>
     </div>
-  {% else %}<p class="p-3 mb-0 text-muted">This class has no members yet.</p>{% endfor %}
+  {% else %}<div class="item"><span class="muted">This class has no members yet.</span></div>{% endfor %}
   </div>
-  <button class="btn btn-success w-100 mb-4" {{ 'disabled' if not members }}>💾 Save attendance</button>
+  <div class="save"><button class="btn or big" style="margin-top:0" {{ 'disabled' if not members }}>Save attendance</button></div>
 </form>
 {% endblock %}
 {% block scripts %}<script>

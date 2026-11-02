@@ -1,21 +1,21 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>⚙️ Settings</h3>
-<div class="card mb-3"><div class="card-header fw-bold">Organisation</div><div class="card-body">
+<h1>Settings</h1>
+<h2 style="margin-top:8px">Organisation</h2>
+<div class="box">
   <form method="post">
-    <label class="form-label mb-0">Organisation / school name (shown on the app and on reports)</label>
-    <input class="form-control mb-2" name="org" value="{{ cfg.org }}" maxlength="60" required>
-    <label class="form-label mb-0">Minimum attendance (%)</label>
-    <input class="form-control mb-1" name="min_pct" type="number" step="any" min="0" max="100" value="{{ cfg.min_pct }}" required>
-    <div class="form-text mb-3">Members below this percentage are shown in red and counted as "below minimum".</div>
-    <button class="btn btn-success w-100">Save settings</button>
+    <label for="o">Organisation / school name (shown on the app and on reports)</label>
+    <input id="o" name="org" value="{{ cfg.org }}" maxlength="60" required>
+    <label for="p">Minimum attendance (%)</label>
+    <input id="p" name="min_pct" type="number" step="any" min="0" max="100" value="{{ cfg.min_pct }}" required>
+    <p class="s">Members below this percentage are shown in red and counted as "below minimum".</p>
+    <button class="btn or big">Save settings</button>
   </form>
-</div></div>
-<div class="card mb-3 border-danger"><div class="card-header fw-bold text-danger">Your data</div><div class="card-body">
-  <p class="small text-muted">Everything is stored on this device only. Clearing deletes all classes, members and attendance (your settings stay).</p>
-  <form method="post" action="{{ url_for('reset') }}"><button class="btn btn-outline-danger js-del">Clear all data</button></form>
-</div></div>
-<div class="card mb-4"><div class="card-body">
-  <a href="{{ url_for('about') }}">About</a> · <a href="{{ url_for('privacy') }}">Privacy Policy</a> · <a href="{{ url_for('terms') }}">Terms of Use</a>
-</div></div>
+</div>
+<h2>Your data</h2>
+<div class="box">
+  <p class="s" style="margin-top:0">Everything is stored on this device only. Clearing deletes all classes, members and attendance (your settings stay).</p>
+  <form method="post" action="{{ url_for('reset') }}"><button class="btn red js-del">Clear all data</button></form>
+</div>
+<div class="box" style="text-align:center"><span class="s">Developed by</span><br><b>{{ developer }}</b><br><span class="s">{{ name }} v{{ version }}</span></div>
 {% endblock %}

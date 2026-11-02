@@ -1,5 +1,6 @@
 """
 Attendance Register - a simple attendance system (classes/groups, members, sessions, reports, export)
+Developer: Chisomo Pen Chitembeya
 Setup: pip install flask      Run: python app.py      Open: http://127.0.0.1:5000
 Exports (Excel, PDF, Word, CSV) use only the Python standard library - nothing else to install.
 """
@@ -11,7 +12,7 @@ from werkzeug.exceptions import HTTPException
 
 NAME = "Attendance Register"
 VERSION = "1.0"
-WHATSAPP = "265995514049"
+DEVELOPER = "Chisomo Pen Chitembeya"
 MAX_NAMES = 200  # most names accepted in one "add members" box
 STATUSES = ["Present", "Late", "Absent", "Excused"]
 COLORS = {"Present": "success", "Late": "warning", "Absent": "danger", "Excused": "secondary"}
@@ -90,7 +91,7 @@ def min_pct():
 
 @app.context_processor
 def inject():
-    return dict(cfg=cfg(), name=NAME, version=VERSION, statuses=STATUSES, colors=COLORS)
+    return dict(cfg=cfg(), name=NAME, version=VERSION, developer=DEVELOPER, statuses=STATUSES, colors=COLORS)
 
 
 @app.template_filter("pct")
@@ -186,7 +187,7 @@ def add_members(cid):
             added += 1
     flash(f"{added} member(s) added." if added else "Type at least one name (one name per line).",
           "success" if added else "danger")
-    return redirect(url_for("class_page", cid=cid))
+    return redirect(url_for("class_page", cid=cid) + "#members")
 
 
 @app.route("/member/<int:mid>/edit", methods=["GET", "POST"])
@@ -199,7 +200,7 @@ def edit_member(mid):
         if name:
             q("UPDATE members SET name=?, code=? WHERE id=?", (name, code, mid))
             flash("Member updated.", "success")
-            return redirect(url_for("class_page", cid=m["class_id"]))
+            return redirect(url_for("class_page", cid=m["class_id"]) + "#members")
         flash("The name cannot be empty.", "danger")
     history = q("""SELECT s.day, s.title, k.status FROM marks k JOIN sessions s ON s.id = k.session_id
                    WHERE k.member_id=? ORDER BY s.day DESC, s.id DESC""", (mid,))
@@ -214,7 +215,7 @@ def delete_member(mid):
     q("DELETE FROM marks WHERE member_id=?", (mid,))
     q("DELETE FROM members WHERE id=?", (mid,))
     flash("Member deleted.", "success")
-    return redirect(url_for("class_page", cid=m["class_id"]))
+    return redirect(url_for("class_page", cid=m["class_id"]) + "#members")
 
 
 # ---------- sessions (taking attendance) ----------
@@ -227,7 +228,7 @@ def add_session(cid):
         datetime.strptime(day, "%Y-%m-%d")
     except ValueError:
         flash("Choose a valid date.", "danger")
-        return redirect(url_for("class_page", cid=cid))
+        return redirect(url_for("class_page", cid=cid) + "#sessions")
     q("INSERT INTO sessions(class_id,day,title) VALUES(?,?,?)", (cid, day, clean(request.form.get("title", ""), 60)))
     return redirect(url_for("take", sid=new_id()))
 
@@ -244,7 +245,7 @@ def take(sid):
             if st in STATUSES:  # a member missing from the form is left unmarked
                 q("INSERT OR REPLACE INTO marks(session_id,member_id,status) VALUES(?,?,?)", (sid, m["id"], st))
         flash("Attendance saved.", "success")
-        return redirect(url_for("class_page", cid=s["class_id"]))
+        return redirect(url_for("class_page", cid=s["class_id"]) + "#sessions")
     current = {k["member_id"]: k["status"] for k in q("SELECT * FROM marks WHERE session_id=?", (sid,))}
     return render_template("take.html", s=s, members=members, current=current)
 
@@ -257,10 +258,10 @@ def delete_session(sid):
     q("DELETE FROM marks WHERE session_id=?", (sid,))
     q("DELETE FROM sessions WHERE id=?", (sid,))
     flash("Session deleted.", "success")
-    return redirect(url_for("class_page", cid=s["class_id"]))
+    return redirect(url_for("class_page", cid=s["class_id"]) + "#sessions")
 
 
-# ---------- settings and information pages ----------
+# ---------- settings ----------
 @app.route("/settings", methods=["GET", "POST"])
 def settings():
     if request.method == "POST":
@@ -284,21 +285,6 @@ def reset():
         q(f"DELETE FROM {t}")
     flash("All data cleared.", "warning")
     return redirect(url_for("index"))
-
-
-@app.route("/about")
-def about():
-    return render_template("about.html", whatsapp=WHATSAPP)
-
-
-@app.route("/privacy")
-def privacy():
-    return render_template("privacy.html")
-
-
-@app.route("/terms")
-def terms():
-    return render_template("terms.html")
 
 
 # ---------- export: Excel, PDF, Word, CSV (standard library only) ----------

@@ -1,6 +1,6 @@
 # Attendance Register
-A simple attendance system by Gift Meza (Mezaneyo). Works in the browser, as a Windows `.exe` and as an Android `.apk`.
-Python 3 + Flask + SQLite + Bootstrap.
+A simple attendance system. Developer: **Chisomo Pen Chitembeya**. Works in the browser, as a Windows `.exe` and as an Android `.apk`.
+Python 3 + Flask + SQLite. The design uses its own CSS (no external libraries), so it also works offline.
 
 ## How to use it
 1. **Create a class or group** (for example "Form 3A" or "Choir").
@@ -20,7 +20,7 @@ tap a button -> route in app.py -> checks the input -> q() reads/writes attendan
 |---|---|
 | `app.py` | Database, attendance maths (`class_data`), all pages, exports |
 | `main.py` / `desktop.py` | Start-up for Android / Windows `.exe` |
-| `templates/` | `base.html` layout, `index.html` classes, `class.html` one class, `take.html` marking page, `edit_member.html`, `settings.html`, `about.html`, `privacy.html`, `terms.html`, `error.html` |
+| `templates/` | `base.html` layout, `index.html` classes, `class.html` one class, `take.html` marking page, `edit_member.html`, `settings.html`, `error.html` |
 | `attendance.db` / `attendance.log` | Saved data / crash details (full traceback) |
 
 Tables: `classes`, `members` (class_id), `sessions` (class_id, day, title), `marks` (session_id, member_id, status), `settings`.

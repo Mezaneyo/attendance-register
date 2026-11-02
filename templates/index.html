@@ -1,18 +1,17 @@
 {% extends "base.html" %}
 {% block content %}
-<h3>📋 My classes and groups</h3>
-<p class="text-muted">Create a class or group, add its members, then take attendance each time you meet.</p>
-<div class="card mb-3"><div class="card-header fw-bold">1️⃣ Create a class or group</div><div class="card-body">
-  <form method="post" action="{{ url_for('add_class') }}" class="d-flex gap-2">
-    <input class="form-control" name="name" placeholder="e.g. Form 3A, Choir, Staff meeting" maxlength="60" required>
-    <button class="btn btn-success text-nowrap">Create</button>
+<h2 style="margin-top:8px">New class or group</h2>
+<div class="box">
+  <form method="post" action="{{ url_for('add_class') }}">
+    <label for="n">Name</label>
+    <input id="n" name="name" placeholder="e.g. Form 3A, Choir, Staff" maxlength="60" required>
+    <button class="btn or big">Create class</button>
   </form>
-</div></div>
-{% for c in classes %}
-<a class="text-decoration-none text-dark" href="{{ url_for('class_page', cid=c.id) }}">
-  <div class="card mb-2"><div class="card-body d-flex justify-content-between align-items-center">
-    <div><b>{{ c.name }}</b><br><small class="text-muted">{{ c.members }} member(s) · {{ c.sessions }} session(s)</small></div>
-    <span class="btn btn-outline-success btn-sm">Open ›</span>
-  </div></div></a>
-{% else %}<p class="text-muted text-center py-4">No classes yet. Create your first one above.</p>{% endfor %}
+</div>
+<h2>My classes</h2>
+<div class="list">
+  {% for c in classes %}<a class="item" href="{{ url_for('class_page', cid=c.id) }}">
+    <div class="t"><b>{{ c.name }}</b><span class="s">{{ c.members }} member(s) · {{ c.sessions }} session(s)</span></div><span style="color:var(--orange);font-size:1.5rem;font-weight:800">›</span></a>
+  {% else %}<div class="item"><span class="muted">No classes yet. Create your first one above.</span></div>{% endfor %}
+</div>
 {% endblock %}
